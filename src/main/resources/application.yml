@@ -1,0 +1,47 @@
+spring:
+  application:
+    name: tripdesk
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: update
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+
+app:
+  jwt:
+    # Base64-encoded 256-bit key. Override with JWT_SECRET in any real deployment.
+    secret: ${JWT_SECRET:dHJpcGRlc2stZGV2LXNlY3JldC1rZXktY2hhbmdlLW1lLWluLXByb2QtMjU2Yml0}
+    expiration-ms: ${JWT_EXPIRATION_MS:86400000}
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+
+---
+# Local development: in-memory H2, no setup needed
+spring:
+  config:
+    activate:
+      on-profile: dev
+  datasource:
+    url: jdbc:h2:mem:tripdesk;DB_CLOSE_DELAY=-1
+    username: sa
+    password:
+  h2:
+    console:
+      enabled: true
+
+---
+# MySQL (used by docker-compose)
+spring:
+  config:
+    activate:
+      on-profile: mysql
+  datasource:
+    url: ${DB_URL:jdbc:mysql://localhost:3306/tripdesk?createDatabaseIfNotExist=true}
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:root}
